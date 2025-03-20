@@ -113,8 +113,12 @@ function getCountDaysInMonth(month, year) {
  * '2024-02-01T00:00:00.000Z', '2024-02-02T00:00:00.000Z'  => 2
  * '2024-02-01T00:00:00.000Z', '2024-02-12T00:00:00.000Z'  => 12
  */
-function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
-  throw new Error('Not implemented');
+function getCountDaysOnPeriod(dateStart, dateEnd) {
+  const oneDay = 1000 * 60 * 60 * 24;
+  const start = new Date(dateStart).getTime();
+  const end = new Date(dateEnd).getTime();
+  const diff = (end - start + oneDay) / 1000 / 60 / 60 / 24;
+  return diff;
 }
 
 /**
@@ -134,8 +138,11 @@ function getCountDaysOnPeriod(/* dateStart, dateEnd */) {
  * '2024-02-02', { start: '2024-02-02', end: '2024-03-02' } => true
  * '2024-02-10', { start: '2024-02-02', end: '2024-03-02' } => true
  */
-function isDateInPeriod(/* date, period */) {
-  throw new Error('Not implemented');
+function isDateInPeriod(date, period) {
+  const start = new Date(period.start).getTime();
+  const end = new Date(period.end).getTime();
+  const currentDate = new Date(date).getTime();
+  return start <= currentDate && currentDate <= end;
 }
 
 /**
@@ -149,8 +156,23 @@ function isDateInPeriod(/* date, period */) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const formattedDate = new Date(date);
+  const hours =
+    formattedDate.getUTCHours() > 12
+      ? formattedDate.getUTCHours() - 12
+      : formattedDate.getUTCHours();
+  const minutes =
+    formattedDate.getMinutes() < 10
+      ? `0${formattedDate.getMinutes()}`
+      : formattedDate.getMinutes();
+  const seconds =
+    formattedDate.getSeconds() < 10
+      ? `0${formattedDate.getSeconds()}`
+      : formattedDate.getSeconds();
+  const symbol = formattedDate.getUTCHours() >= 12 ? 'PM' : 'AM';
+
+  return `${formattedDate.getMonth() + 1}/${formattedDate.getUTCDate()}/${formattedDate.getFullYear()}, ${hours}:${minutes}:${seconds} ${symbol}`;
 }
 
 /**
