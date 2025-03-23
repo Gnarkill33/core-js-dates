@@ -233,8 +233,21 @@ function getWeekNumberByDate(/* date */) {
  * Date(2024, 0, 13) => Date(2024, 8, 13)
  * Date(2023, 1, 1) => Date(2023, 9, 13)
  */
-function getNextFridayThe13th(/* date */) {
-  throw new Error('Not implemented');
+function getNextFridayThe13th(date) {
+  let currentYear = date.getFullYear();
+  let currentMonth = date.getMonth();
+  const friday = 5;
+  const nextFridayThirteenth = new Date(currentYear, currentMonth, 13);
+
+  while (nextFridayThirteenth.getDay() !== friday) {
+    currentMonth += 1;
+    if (currentMonth === 0) {
+      currentYear += 1;
+    }
+    nextFridayThirteenth.setFullYear(currentYear, currentMonth, 13);
+  }
+
+  return nextFridayThirteenth;
 }
 
 /**
@@ -248,8 +261,8 @@ function getNextFridayThe13th(/* date */) {
  * Date(2024, 5, 1) => 2
  * Date(2024, 10, 10) => 4
  */
-function getQuarter(/* date */) {
-  throw new Error('Not implemented');
+function getQuarter(date) {
+  return Math.ceil((date.getMonth() + 1) / 3);
 }
 
 /**
@@ -270,8 +283,26 @@ function getQuarter(/* date */) {
  * { start: '01-01-2024', end: '15-01-2024' }, 1, 3 => ['01-01-2024', '05-01-2024', '09-01-2024', '13-01-2024']
  * { start: '01-01-2024', end: '10-01-2024' }, 1, 1 => ['01-01-2024', '03-01-2024', '05-01-2024', '07-01-2024', '09-01-2024']
  */
-function getWorkSchedule(/* period, countWorkDays, countOffDays */) {
-  throw new Error('Not implemented');
+function getWorkSchedule(period, countWorkDays, countOffDays) {
+  const start = new Date(period.start.split('-').reverse().join('-'));
+  const end = new Date(period.end.split('-').reverse().join('-'));
+  const currentDate = new Date(start);
+  const schedule = [];
+
+  while (currentDate <= end) {
+    for (let i = 0; i < countWorkDays; i += 1) {
+      if (currentDate > end) break;
+      const day = String(currentDate.getDate()).padStart(2, '0');
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const formattedDate = `${day}-${month}-${year}`;
+      schedule.push(formattedDate);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    currentDate.setDate(currentDate.getDate() + countOffDays);
+  }
+
+  return schedule;
 }
 
 /**
